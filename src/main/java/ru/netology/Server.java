@@ -68,23 +68,22 @@ public class Server {
             while ((line = reader.readLine()) != null) {
                 body.append(line);
             }
-            Request request = new Request(method, path, headers, new ByteArrayInputStream(body.toString().getBytes()));
+            ru.netology.HttpRequest httpRequest = new ru.netology.HttpRequest(method, path, headers, new ByteArrayInputStream(body.toString().getBytes()));
 
-            handleRequest(request, outputStream);
+            handleRequest(httpRequest, outputStream);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void handleRequest(Request request, BufferedOutputStream responseStream) throws IOException {
-        String method = request.getMethod();
-        String path = request.getPath();
+    private void handleRequest(HttpRequest httpRequest, BufferedOutputStream responseStream) throws IOException {
+        String method = httpRequest.getMethod();
+        String path = httpRequest.getPath();
 
-        Map<String, Handler> methodHandlers = handlers;
-        Handler handler = methodHandlers.get(method);
+        Handler handler = handlers.get(method + " " + path);
 
         if (handler != null) {
-            handler.handle((com.sun.net.httpserver.Request) request, responseStream);
+            handler.handle(httpRequest, responseStream);
         } else {
             sendResponse(responseStream, "404 Not Found", "Ресурс не найден");
         }
