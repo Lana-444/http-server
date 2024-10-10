@@ -1,18 +1,39 @@
 package ru.netology;
 
-import java.io.*;
-import java.net.ServerSocket;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.io.IOException;
 
 public class Main {
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-    new Server(9999).start();
+        final var server = new Server(9999);
 
-  }
+
+        server.addHandler("GET", "/messages", (request, responseStream) -> {
+            // TODO: обработка GET запроса
+            try {
+                responseStream.write("HTTP/1.1 200 OK\r\n\r\nHello from GET /messages!".getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        server.addHandler("POST", "/messages", (request, responseStream) -> {
+            // TODO: обработка POST запроса
+            try {
+                responseStream.write("HTTP/1.1 200 OK\r\n\r\nMessage received!".getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        server.start(9999);
+    }
 }
+
+
+
+
+
+
 
 
